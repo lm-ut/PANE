@@ -1,13 +1,11 @@
+
 # PANE
 
-*PANE* leverages PCA and NNLS (Non-Negative Least Squares) to assess the ancestral composition of admixed individuals with high accuracy and reliability.   
-
-
-In this page you will find instructions for a basic usage, for a more in-depth tutorial go to Articles > Tutorial (also accessible by clicking the three lines - top right of the page)
+*PANE* leverages PCA and NNLS (Non-Negative Least Squares) to assess the ancestral composition of admixed individuals with high accuracy and reliability.
 
 ## Installation
 
-```
+```{r, eval=FALSE}
 install.packages("devtools") # if you have not installed "devtools" package
 devtools::install_github("lm-ut/PANE")
 library("PANE")
@@ -15,7 +13,7 @@ library("PANE")
 
 *PANE* requires the following R packages: 
 
-```
+```{r, eval=FALSE}
 install.packages("dplyr")
 install.packages("nnls")
 install.packages("ggplot2")
@@ -32,7 +30,7 @@ For its most basic usage PANE needs:
 
 ### Basic Usage Example
   
-```
+```{r, eval=FALSE}
 $ pca = read_eigen(pca_input = 'data/TOY.pca.evec')
 $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
 ```
@@ -72,19 +70,19 @@ The AS_file is a two-columns file with the population list on the first column, 
 
 To read the AS_file, a simple ```read_table(file, header=T)``` will be sufficient.   
 
-```
+```{r, eval=FALSE}
 $ AS_file = read.table('data/Example_AS', header=TRUE)
 ```
 
 With the PCA and AS_file loaded, we are finally ready to run PANE as follows:
 
-```
+```{r, eval=FALSE}
 $ PANE_result = pane(pca_input = pca, as_file = AS_file)
 ```
   
 2) You can avoid relying on the AS_file if you wish, using a vector of the target and source groups directly in pane() function, as follows:
   
-```
+```{r, eval=FALSE}
 $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
 ```
 
@@ -92,7 +90,7 @@ $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70G
   
 Finally, if you want to save *PANE* results on a table-like format, you can use ```write_pane()```:
   
-```
+```{r, eval=FALSE}
 $ PANE_result <- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
 $ write_pane(PANE_input = PANE_result, output_name = 'my_dir/my_pane_results.txt')
 ```
