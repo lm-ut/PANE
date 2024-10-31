@@ -1,9 +1,9 @@
-# PANE
+# PANE - Principal component Ancestry proportions using NNLS Estimation
 
 *PANE* leverages PCA and NNLS (Non-Negative Least Squares) to assess the ancestral composition of admixed individuals with high accuracy and reliability.   
 
 
-In this page you will find instructions for a basic usage, for a more in-depth tutorial go to Articles > Tutorial (also accessible by clicking the three lines - top right of the page)
+In this page you will find instructions for a basic usage, for a more in-depth tutorial click [here]()
 
 ## Installation
 
