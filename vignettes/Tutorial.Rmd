@@ -1,0 +1,203 @@
+---
+title: "Tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\devtools::build_vignettes()
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(PANE)
+```
+
+Introduction
+============
+
+*PANE* is an R package that leverages PCA and NNLS (Non-Negative Least Squares) to assess the ancestral composition of admixed individuals with high accuracy and reliability, the approach further described in [here](). PANE assigns the genetic ancestry of list of target samples or populations given a list of putative sources.
+
+*PANE* estimations are based on a PCA where the targets and source groups are available, along with those we suggest to use additional groups to better define the PC space. Once that the PC space is defined, a set of NNLS is then applied on the PC coordinates, effectively summarizing the genetic ancestry. 
+
+For its most basic usage PANE needs:  
+
+I) A PCA matrix (a dataframe with N PCs)
+II) A list of target and source groups (or samples)
+  
+    
+Basic usage example
+============
+
+Right below you can find a very basic way to run PANE, if you want more details, please keep on reading.
+
+```{r, eval=FALSE}
+$ pca = read_eigen(pca_input = 'data/TOY.pca.evec')
+$ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
+```  
+  
+  
+PANE package has two functions to read the PCA matrix, ```read_eigen()``` and ```read_flash()```.  
+* ```read_eigen()``` will read a PCA that has been created with smartpca from the EIGENSOFT software.  
+* ```read_flash()``` instead, will read a PCA that has been created with flashpca software.  
+The goal of both functions is to set the PCA file so that it looks as follows:  
+  
+POP     IND   PCN
+------ ----- -------
+Source1 IND_1 0.01
+Source1 IND_2 0.02
+Source2 IND_1 -0.03
+Admix1 IND_1 0.08 
+  
+If neither ```read_eigen()``` nor ```read_flash()``` is for you, you might want to simply use ```read.table()```, and set the file so that it has the aforementioned look.  
+
+For the sake of the example, let's say you obtained a PCA from the software EIGENSOFT, using smartpca.  
+
+```{r, eval=FALSE}
+$ pca = read_eigen(pca_input = 'data/TOY.pca.evec')
+```  
+  
+The second step is to set up an 'AS_file', a file with the list of the Admixed groups (A) and the Source groups (S). If you want to use PANE sample-wise rather than group-wise, simply adjust the PCA file so that in the 'POP' column is identical to the 'IND' column, and set the AS_file with the samples list, rather than the group list.   
+The AS_file is a two-columns file with the population list on the first column, and the 'A/S' information on the second column. The 'A/S' information stands for Admixed (A) or Source (S), for each population/group we will indicate whether PANE should consider it as a Source (S) or as an admixed target (A), the file looks like this:  
+
+POP A/S
+------- --- 
+Source1 S
+Source2 S
+Admix1  A  
+
+To read the AS_file, a simple ```read_table(file, header=T)``` will be sufficient.   
+
+```{r, eval=FALSE}
+$ AS_file = read.table('data/Example_AS', header=TRUE)
+```
+
+With the PCA and AS_file loaded, we are finally ready to run PANE as follows:
+
+```{r, eval=FALSE}
+$ PANE_result = pane(pca_input = pca, as_file = AS_file)
+```
+  
+  
+You can avoid relying on the AS_file if you wish, and rather use a vector of the target and source groups directly in pane() function, as follows:
+  
+```{r, eval=FALSE}
+$ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
+```
+  
+  
+Finally, if you want to save *PANE* results on a table-like format, you can use ```write_pane()```, this way:
+  
+```{r, eval=FALSE}
+$ PANE_result <- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
+$ write_pane(PANE_input = v_result, output_name = 'my_dir/my_PANE_results.txt')
+```
+
+Plotting
+============
+
+The function ```plot_pane()``` can help you plot ```pane()``` results. Based on your preferences, you can either rely on basic R or on ggplot2 to plot your results. Let's say we want to plot PANE results using ggplot2:  
+
+```{r, eval=FALSE}
+$ PANE_result <- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
+$ plot_pane(PANE_result, 'PANE_plot', type_ggplot = 'YES')
+```  
+
+Alternatively, to plot with basic R, just run the command without ```type_ggplot``` option, like so:  
+
+```{r, eval=FALSE}
+$ PANE_result <- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
+$ plot_pane(PANE_result, 'PANE_plot')
+```  
+  
+You will find a barplot in your working directory.  
+  
+  
+Euclidean Distances between Sources 
+============
+
+The function ```pcs_distances``` allows you to estimate and visualize the Euclidean Distances (ED) between pairs of sources. To run the function you need to provide:
+
+* ```pca_input``` takes a pca matrix
+* ```output_name``` string with path an output file name
+* ```sources_file``` two-columns table with the list of source pairs to test:
+
+S1 S1
+---- ----
+GST1 GST2
+GST2 GST3
+GST3 GST4 
+
+* ```return_plot = 'YES'/NULL``` allows you to decide whether to plot the distances ('YES') or not (NULL)
+
+```{r, eval=FALSE}
+$ pca = read_eigen(pca_input = 'data/TOY.pca.evec')
+$ Source_D = read.table('data/Sources_Distances', header =T)
+$ pcs_distances(pca_input = pca, output_name = 'my/res/dir/output_file', sources_file = Source_D, return_plot = 'YES')
+``` 
+
+
+Resampling
+============
+
+To produce Standard Errors (SE), you can rely on resampling techniques. Let's say we produce 20 PCAs to estimate the SE, each of them on a dataset with a different SNPs subset: we thus end up with 20 PCAs, all with slighly different values of PC coordinates.  
+The function ```read.resampling()``` reads all 20 PCAs and perform PANE on each of them. It will return a list containing the results for each resampling (20 PANE results). Given that ```read.resampling()``` will read and perform PANE on each resampled set, the function uses several arguments:  
+
+I)```path_tofiles```: path to the directory where all the 20 PCAs are stored  
+
+II)```file_pattern```, a string containing the name shared by all 20 PCAs, the function will use the string as a pattern to find all files with said string. If this parameter seems confusing, consider that we modelled the function considering that in a resampling setting one could name the PCAs as follows: 'PCA_Resampled_1', 'PCA_Resampled_2',...,'PCA_Resampled_20'. A file_patters as 'PCA_Resampled_' will find all files from 'PCA_Resampled_1' to 'PCA_Resampled_20'.  
+
+III)```as_file```, this is the AS_file we used in ```pane()```. It is a two-columns file with the population list on the first column, and the 'A/S' information on the second column. The 'A/S' information stands for Admixed (A) or Source (S), for each population/group we will indicate whether PANE should consider it as a Source (S) or as an admixed target (A), the file looks like this:  
+
+POP A/S
+------- --- 
+Source1 S
+Source2 S
+Admix1  A     
+
+IV) ```eigentype```, this is an optional argument. If present, PCA will be read through read_eigen() function, if absent PCA will be loaded via  ```read_flash()```.  
+
+
+All in all, the function can be ran as such:  
+
+
+```{r, eval=FALSE}
+$ AS_file = read.table('data/Example_AS', header=TRUE)
+$ PANE_resampling = read.resampling(path_tofiles = 'data/', file_pattern = 'TOY_Jack', as_file = AS_file, eigentype)
+``` 
+  
+  
+Once you ran PANE on all 20 of your resampled PCAs, to estimate the SE you can use the ```se.resampling()``` function. To do so, you will need:
+* your main PANE results, obtained with  ```pane()``` on the main PCA (the PCA with all the available SNPs), 
+* the PANE results obtained from the 20 resampled PCAs (with the function ```read.resampling()``` you can see above).  
+In the example below, you can see that we first loaded the AS_file through ```read.table()```, the PANE main results are obtained with ```pane()```, the PANE resampling results are obtained with ```read.resampling()```. Importantly, to ran ```se.resampling()```, you will also need a numeric vector containing the number of SNPs per each chromosome (ie. chromovec = rep(1000,times = 4), 1000 are the number of SNPs used per each 4 PCA ran for this tutorial). 
+
+```{r, eval=FALSE}
+$ main_pca = read_eigen(pca_input = 'data/TOY.pca.evec')
+$ AS_file = read.table('data/Example_AS', header=TRUE)
+$ PANE_main_result <- pane(pca_input = main_pca, as_file = AS_file)
+$ PANE_resampling = read.resampling(path_tofiles = 'data/', file_pattern = 'TOY_Jack', as_file = AS_file, eigentype)
+$ iterations = rep(1000,times = 4)
+$ PANE_SE = se.resampling(PANE_main_result, PANE_resampling, chromovec = iterations)
+``` 
+
+
+Evaluate Models
+============
+
+The function ```evaluate_models()``` tests all possible models and outputs a list of unfit models, which are indicated by negative performance scores. Additionally, it will return the best fit model, allowing you to easily identify the most effective solution for your analysis. To harness ```evaluate_models()``` effectively, it's essential to use a combination of several possible sources and targets, ensuring a comprehensive evaluation of the models. 
+
+```{r, eval=FALSE}
+$ main_pca = read_eigen(pca_input = 'data/TOY.pca.evec')
+$ AS_file = read.table('data/Example_AS', header=TRUE)
+$ PANE_models <- evaluate_models(pca_input = main_pca, as_file = AS_file) #OR
+$ PANE_models <- evaluate_models(pca_input = main_pca, sources = c("AFR1","AFR2","EUR1","EUR2","ASN1","ASN2"), admixed = c("70GST1.30GST2")) 
+``` 
+
+The function output will list all iterations tested along with the residuals. while negative values indicate an unfit model, also residuals can be insightful on the model. High residuals indicate that the tested model is not optimal, between multiple model with different residuals we suggest to select the ones with the smallest residuals values.
