@@ -3,7 +3,7 @@
 *PANE* leverages PCA and NNLS (Non-Negative Least Squares) to assess the ancestral composition of admixed individuals with high accuracy and reliability.   
 
 
-In this page you will find instructions for a basic usage, for a more in-depth tutorial click [here]()
+In this page you will find instructions for a basic usage, for a more in-depth tutorial click [here](https://lm-ut.github.io/PANE/articles/Tutorial.html)
 
 ## Installation
 
