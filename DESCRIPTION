@@ -1,0 +1,21 @@
+Package: PANE
+Title: Principal component Ancestry proportions using NNLS Estimation
+Version: 0.0.1
+Authors@R: c(person("Ludovica", "Molinaro",email = "lu.molinaro8@gmail.com", role = c("aut", "cre")),
+    person("Francesco", "Montinaro", email = "francesco.montinaro@gmail.com", role = c("aut")),
+    person("Luciana", "DeGennaro",email = "luciana.degennaro@uniba.it", role = c("aut")))
+Description: Estimates global ancestry proportions from Principal Component Analyses through Non-Negative Least Squares.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    dplyr,
+    nnls,
+    ggplot2
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
