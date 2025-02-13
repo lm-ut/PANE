@@ -99,7 +99,7 @@ $ write_pane(PANE_input = PANE_result, output_name = 'my_dir/my_pane_results.txt
 
 ## Cite PANE
 
-If you use PANE, please cite [BiorXiv preprint]()
+If you use PANE, please cite [our paper](https://doi.org/10.1186/s13059-025-03491-z)
 
 ## Contact
 
