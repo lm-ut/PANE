@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(PANE)
+library(dplyr)
+library(nnls)
 ```
 
 Introduction
@@ -62,6 +64,8 @@ For the sake of the example, let's say you obtained a PCA from the software EIGE
 ```{r, eval=FALSE}
 $ pca = read_eigen(pca_input = 'data/TOY.pca.evec')
 ```  
+
+*NB*: The script assumes that there are family names available in the first column of the PCA in this format: POP:ID (or FamilyName:SampleName) 
   
 The second step is to set up an 'AS_file', a file with the list of the Admixed groups (A) and the Source groups (S). If you want to use PANE sample-wise rather than group-wise, simply adjust the PCA file so that in the 'POP' column is identical to the 'IND' column, and set the AS_file with the samples list, rather than the group list.   
 The AS_file is a two-columns file with the population list on the first column, and the 'A/S' information on the second column. The 'A/S' information stands for Admixed (A) or Source (S), for each population/group we will indicate whether PANE should consider it as a Source (S) or as an admixed target (A), the file looks like this:  
@@ -71,6 +75,8 @@ POP A/S
 Source1 S
 Source2 S
 Admix1  A  
+
+*NB*: If the column A/S does not contain "S" or "A", the population/ID will be skipped.
 
 To read the AS_file, a simple ```read_table(file, header=T)``` will be sufficient.   
 
@@ -96,7 +102,7 @@ Finally, if you want to save *PANE* results on a table-like format, you can use 
   
 ```{r, eval=FALSE}
 $ PANE_result <- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
-$ write_pane(PANE_input = v_result, output_name = 'my_dir/my_PANE_results.txt')
+$ write_pane(PANE_result, output_name = 'my_dir/my_PANE_results.txt')
 ```
 
 Plotting
