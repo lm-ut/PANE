@@ -104,3 +104,7 @@ If you use PANE, please cite [our paper](https://doi.org/10.1186/s13059-025-0349
 ## Contact
 
 For questions and bug reports please contact [LM](mailto:ludovica.molinaro@kuleuven.be).
+
+## Acknowledgement
+
+A heartfelt thank you to Francesca Siggillino who provided invaluable feedback on the package and its tutorial.
