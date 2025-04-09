@@ -48,7 +48,7 @@ The goal of both functions is to set the PCA file as follows:
 | POP | IND   | PCN |
 | --- | ----  | ------- |
 | SRC1 | SRC1_1 | 0.01 |
-| SRC1 | SCR1_2 | 0.02 |
+| SRC1 | SRC1_2 | 0.02 |
 | ADM1 | ADM1_1 | 0.08 |
   
 If neither ```read_eigen()``` nor ```read_flash()``` is for you, you might want to simply use ```read.table()```, and set the file so that it has the aforementioned look.  
