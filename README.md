@@ -107,4 +107,4 @@ For questions and bug reports please contact [LM](mailto:ludovica.molinaro@kuleu
 
 ## Acknowledgement
 
-A heartfelt thank you to Francesca Siggillino who provided feedback on the package and its tutorial.
+A heartfelt thank you to Francesca Siggillino for her feedback, which improved the readability of the tutorial and the usability of the tool.
