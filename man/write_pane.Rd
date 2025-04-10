@@ -19,6 +19,6 @@ write_pane allows to save pane results in a table-like format.
 pca = read_eigen(pca_input = 'data/TOY.pca.evec')
 example_as = read.table('data/Example_AS', header=TRUE)
 pane_results <- pane(pca_input = pca, as_file = example_as)
-write_pane(pane_input = pane_results, output_name = 'my_dir/my_pane_results.txt')
+write_pane(pane_results, output_name = 'my_dir/my_pane_results.txt')
 }
 }
