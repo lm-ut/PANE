@@ -67,8 +67,9 @@
 
     
     
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">PANE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">PANE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nnls</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -87,7 +88,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">$</span><span class="st"> </span>pca =<span class="st"> </span><span class="kw">read_eigen</span>(<span class="dt">pca_input =</span> <span class="st">'data/TOY.pca.evec'</span>)
 <span class="op">$</span><span class="st"> </span>PANE_result =<span class="st"> </span><span class="kw">pane</span>(<span class="dt">pca_input =</span> pca, <span class="dt">sources =</span> <span class="kw">c</span>(<span class="st">'GST1'</span>,<span class="st">'GST2'</span>), <span class="dt">admixed=</span><span class="kw">c</span>(<span class="st">'70GST1.30GST2'</span>))</code></pre></div>
 <p>PANE package has two functions to read the PCA matrix, <code><a href="../reference/read_eigen.html">read_eigen()</a></code> and <code><a href="../reference/read_flash.html">read_flash()</a></code>.<br>
-* <code><a href="../reference/read_eigen.html">read_eigen()</a></code> will read a PCA that has been created with smartpca from the EIGENSOFT software.<br>
+* <code><a href="../reference/read_eigen.html">read_eigen()</a></code> will read a PCA that has been created with smartpca from the EIGENSOFT software. In the PCA file both family names and sample names should be available in the first column as <a href="POP:ID" class="uri">POP:ID</a> (or FamilyName:SampleName).<br>
 * <code><a href="../reference/read_flash.html">read_flash()</a></code> instead, will read a PCA that has been created with flashpca software.<br>
 The goal of both functions is to set the PCA file so that it looks as follows:</p>
 <table class="table">
@@ -122,8 +123,8 @@ The goal of both functions is to set the PCA file so that it looks as follows:</
 <p>If neither <code><a href="../reference/read_eigen.html">read_eigen()</a></code> nor <code><a href="../reference/read_flash.html">read_flash()</a></code> is for you, you might want to simply use <code><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table()</a></code>, and set the file so that it has the aforementioned look.</p>
 <p>For the sake of the example, let's say you obtained a PCA from the software EIGENSOFT, using smartpca.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">$</span><span class="st"> </span>pca =<span class="st"> </span><span class="kw">read_eigen</span>(<span class="dt">pca_input =</span> <span class="st">'data/TOY.pca.evec'</span>)</code></pre></div>
-<p>The second step is to set up an 'AS_file', a file with the list of the Admixed groups (A) and the Source groups (S). If you want to use PANE sample-wise rather than group-wise, simply adjust the PCA file so that in the 'POP' column is identical to the 'IND' column, and set the AS_file with the samples list, rather than the group list.<br>
-The AS_file is a two-columns file with the population list on the first column, and the 'A/S' information on the second column. The 'A/S' information stands for Admixed (A) or Source (S), for each population/group we will indicate whether PANE should consider it as a Source (S) or as an admixed target (A), the file looks like this:</p>
+<p>The second step is to set up an 'AS_file', a file with the list of the Admixed groups (A) and the Source groups (S). If you want to use PANE sample-wise rather than group-wise, simply adjust the PCA file so that in the 'POP' column is identical to the 'IND' column, and set the AS_file with the samples list, rather than the group list.</p>
+<p>The AS_file is a two-columns file with the population list on the first column, and the 'A/S' information on the second column. The 'A/S' information stands for Admixed (A) or Source (S), for each population/group we will indicate whether PANE should consider it as a Source (S) or as an admixed target (A), the file looks like this:</p>
 <table class="table">
 <thead><tr class="header">
 <th>POP A/S</th>
@@ -144,6 +145,32 @@ The AS_file is a two-columns file with the population list on the first column, 
 </tr>
 </tbody>
 </table>
+<p><em>NB</em>: If you omit the A/S information on the 2nd column, PANE will skip that population. In the example below, Admix2 will be skipped:</p>
+<table class="table">
+<thead><tr class="header">
+<th>POP A/S</th>
+<th></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Source1</td>
+<td>S</td>
+</tr>
+<tr class="even">
+<td>Source2</td>
+<td>S</td>
+</tr>
+<tr class="odd">
+<td>Admix1</td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td>Admix2</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>We will implement a warning in the future.</p>
 <p>To read the AS_file, a simple <code>read_table(file, header=T)</code> will be sufficient.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">$</span><span class="st"> </span>AS_file =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">'data/Example_AS'</span>, <span class="dt">header=</span><span class="ot">TRUE</span>)</code></pre></div>
 <p>With the PCA and AS_file loaded, we are finally ready to run PANE as follows:</p>
@@ -152,7 +179,7 @@ The AS_file is a two-columns file with the population list on the first column, 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">$</span><span class="st"> </span>PANE_result =<span class="st"> </span><span class="kw">pane</span>(<span class="dt">pca_input =</span> pca, <span class="dt">sources =</span> <span class="kw">c</span>(<span class="st">'GST1'</span>,<span class="st">'GST2'</span>), <span class="dt">admixed=</span><span class="kw">c</span>(<span class="st">'70GST1.30GST2'</span>))</code></pre></div>
 <p>Finally, if you want to save <em>PANE</em> results on a table-like format, you can use <code><a href="../reference/write_pane.html">write_pane()</a></code>, this way:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">$</span><span class="st"> </span>PANE_result &lt;-<span class="st"> </span><span class="kw">pane</span>(<span class="dt">pca_input =</span> pca, <span class="dt">sources =</span> <span class="kw">c</span>(<span class="st">'GST1'</span>,<span class="st">'GST2'</span>), <span class="dt">admixed=</span><span class="kw">c</span>(<span class="st">'70GST1.30GST2'</span>))
-<span class="op">$</span><span class="st"> </span><span class="kw">write_pane</span>(<span class="dt">PANE_input =</span> v_result, <span class="dt">output_name =</span> <span class="st">'my_dir/my_PANE_results.txt'</span>)</code></pre></div>
+<span class="op">$</span><span class="st"> </span><span class="kw">write_pane</span>(PANE_result, <span class="dt">output_name =</span> <span class="st">'my_dir/my_PANE_results.txt'</span>)</code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
@@ -246,8 +273,8 @@ In the example below, you can see that we first loaded the AS_file through <code
 <span class="op">$</span><span class="st"> </span>AS_file =<span class="st"> </span><span class="kw">read.table</span>(<span class="st">'data/Example_AS'</span>, <span class="dt">header=</span><span class="ot">TRUE</span>)
 <span class="op">$</span><span class="st"> </span>PANE_main_result &lt;-<span class="st"> </span><span class="kw">pane</span>(<span class="dt">pca_input =</span> main_pca, <span class="dt">as_file =</span> AS_file)
 <span class="op">$</span><span class="st"> </span>PANE_resampling =<span class="st"> </span><span class="kw">read.resampling</span>(<span class="dt">path_tofiles =</span> <span class="st">'data/'</span>, <span class="dt">file_pattern =</span> <span class="st">'TOY_Jack'</span>, <span class="dt">as_file =</span> AS_file, eigentype)
-<span class="op">$</span><span class="st"> </span>chromovec =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1000</span>,<span class="dt">times =</span> <span class="dv">4</span>)
-<span class="op">$</span><span class="st"> </span>PANE_SE =<span class="st"> </span><span class="kw">se.resampling</span>(PANE_main_result, PANE_resampling, chromovec)</code></pre></div>
+<span class="op">$</span><span class="st"> </span>iterations =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1000</span>,<span class="dt">times =</span> <span class="dv">4</span>)
+<span class="op">$</span><span class="st"> </span>PANE_SE =<span class="st"> </span><span class="kw">se.resampling</span>(PANE_main_result, PANE_resampling, <span class="dt">chromovec =</span> iterations)</code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="evaluate-models">Evaluate Models<a class="anchor" aria-label="anchor" href="#evaluate-models"></a>
