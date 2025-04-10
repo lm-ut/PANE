@@ -45,6 +45,16 @@ pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
     Admixed_pop = as.character(as_file$POP[as_file$A.S == 'A'])
     Source_pop = as.character(as_file$POP[as_file$A.S == 'S'])
 
+    ## Check on AS_file labels
+
+    as_file$mismatch <- as_file$A.S %in% c("A", "S")
+    false_val = as_file[as_file$mismatch == FALSE,]
+
+    if (nrow(false_val) >= 1) {
+      pop_names = false_val[,1]
+      print(paste0("No A/S assignation, this group will be skipped: ", pop_names))
+    }
+
     ### Source copying vector
 
     Source_cv = pca_aggregated[pca_aggregated$POP %in% Source_pop,]
@@ -132,7 +142,7 @@ pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
 #' pca = read_eigen(pca_input = 'data/TOY.pca.evec')
 #' example_as = read.table('data/Example_AS', header=TRUE)
 #' pane_results <- pane(pca_input = pca, as_file = example_as)
-#' write_pane(pane_input = pane_results, output_name = 'my_dir/my_pane_results.txt')
+#' write_pane(pane_results, output_name = 'my_dir/my_pane_results.txt')
 #' }
 #' @export
 
