@@ -112,7 +112,7 @@ $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70G
 </tr>
 <tr class="even">
 <td>SRC1</td>
-<td>SCR1_2</td>
+<td>SRC1_2</td>
 <td>0.02</td>
 </tr>
 <tr class="odd">
@@ -162,7 +162,7 @@ The AS_file is a two-columns file with the population list on the first column, 
 </h4>
 <p>Finally, if you want to save <em>PANE</em> results on a table-like format, you can use <code><a href="reference/write_pane.html">write_pane()</a></code>:</p>
 <pre><code>$ PANE_result &lt;- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
-$ write_pane(PANE_input = PANE_result, output_name = 'my_dir/my_pane_results.txt')</code></pre>
+$ write_pane(PANE_result, output_name = 'my_dir/my_pane_results.txt')</code></pre>
 </div>
 </div>
 </div>
