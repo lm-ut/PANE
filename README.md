@@ -57,7 +57,6 @@ If neither ```read_eigen()``` nor ```read_flash()``` is for you, you might want 
 
 
 #### Running PANE
-
   
 The function ```pane()``` requires also a list of the target and reference groups: you can provide the list in two ways.
 
@@ -86,6 +85,21 @@ $ PANE_result = pane(pca_input = pca, as_file = AS_file)
   
 ```
 $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
+```
+
+#### Summary Statistics and Weights on the Principal Coordinates
+
+By defaul, PANE will average the coordinates of the sources and target groups to then move to the NNLS step. You can choose to opt for another summary statistics, for example 'median' like follows: 
+
+```
+$ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'), pc_met = 'median')
+```
+
+Additionally, by providing a list of values (for example the variance explained for each PC that PANE will consider), you could run PANE on weighted coordinates, as follows:
+
+```
+$ weights_file = read.table('variance_explained')
+$ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'), pc_weights = weights_file)
 ```
 
 #### Writing PANE output
