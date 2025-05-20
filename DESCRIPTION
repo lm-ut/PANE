@@ -1,6 +1,6 @@
 Package: PANE
 Title: Principal component Ancestry proportions using NNLS Estimation
-Version: 0.0.1
+Version: 1.2.0
 Authors@R: c(person("Ludovica", "Molinaro",email = "lu.molinaro8@gmail.com", role = c("aut", "cre")),
     person("Francesco", "Montinaro", email = "francesco.montinaro@gmail.com", role = c("aut")),
     person("Luciana", "DeGennaro",email = "luciana.degennaro@uniba.it", role = c("aut")))
