@@ -1,10 +1,12 @@
 #' pane
 #'
 #' pane() function takes a PCA as input and analyses it via NNLS to describe admixed individuals as a mixture of sources groups.
-#' @param pca_input R data.frame of PCA with N PCs
-#' @param as_file R data.frame with two columns: POP and A/S, POP column lists all populations to be considered, A/S indicatea whether the population should be considered as Admixed ('A') or as Source ('S')
-#' @param sources R vector indicating the groups that should be considered as Sources
-#' @param admixed R vector indicating the groups that should be considered as Admixed
+#' @param pca_input R data.frame of PCA with N PCs.
+#' @param as_file R data.frame with two columns: POP and A/S, POP column lists all populations to be considered, A/S indicatea whether the population should be considered as Admixed ('A') or as Source ('S').
+#' @param sources R vector indicating the groups that should be considered as Sources.
+#' @param admixed R vector indicating the groups that should be considered as Admixed.
+#' @param pc_met String indicating the summary function to be used to summarize the coordinates within groups (can be "mean","median","sum","var","length") or any summary function that can be read directly by R function aggregate(). Default is 'mean'.
+#' @param pc_weights R data.frame with one column and no header, listing values to be used as weights. Number of values should be identical to the number of the Principal Components considered by PANE.
 #' @examples
 #' pca = read_eigen('data/TOY.pca.evec') #OR
 #' pca = read_flash('data/TOY_flash.pca')
@@ -14,7 +16,7 @@
 #' @return Returns a list containing the ancestries proportions per each Admixed group
 #' @export
 
-pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
+pane <- function(pca_input, as_file, sources = NULL, admixed = NULL, pc_met = "mean", pc_weights = NULL) {
 
   if(missing(pca_input)) {
     stop('ERROR: pane() needs a PCA matrix as input')
@@ -30,15 +32,22 @@ pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
     subset_pca = select(pca_input, contains("P"))
     if(ncol(subset_pca)<2) {stop("Can't find any columns with PC1..PCX labels")}
 
-    # Grouping samples by POP name and average their PCs values
+    # Grouping samples by POP name and apply summary statistic given by pc_met to their PCs values
+    # Method approach
 
-    ## Aggregate
-    pca_aggregated = aggregate(subset_pca[,-c(1)], by= list(subset_pca$POP), FUN = mean)
+    if (!is.null(pc_weights)) {
+      print('Principal Components will now be weighted based on the values provided')
+      if (nrow(pc_weights) != ncol(subset_pca)-1) {stop('ERROR: mismatch between number of variance values and principal components') }
+
+      pca_weighted = subset_pca[,2:ncol(subset_pca)]*t(pc_weights)
+      subset_pca = cbind(subset_pca[,1],pca_weighted)
+      names(subset_pca)[1] = "POP"
+    }
+
+    pca_aggregated = aggregate(subset_pca[,-c(1)], by= list(subset_pca$POP), FUN = pc_met)
+
     names(pca_aggregated)[names(pca_aggregated) == 'Group.1'] <- 'POP'
 
-    ## Group_by
-    #pca_grouped_avg <- subset_pca %>% group_by(POP) %>% summarise_all(funs(mean=mean))
-    #pca_grouped_int = as.matrix(sapply(pca_grouped_avg, as.numeric))
 
     ## Selecting Sources and Admixed based on as_file file
 
@@ -90,7 +99,17 @@ pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
     subset_pca = select(pca_input, contains("P"))
     if(ncol(subset_pca)<2) {stop("Can't find any columns with PC1..PCX labels")}
 
-    # Grouping samples by POP name and average their PCs values
+    # Grouping samples by POP name and apply summary statistic given by pc_met to their PCs values
+    # Method approach
+
+    if (!is.null(pc_weights)) {
+      print('Principal Components will now be weighted based on the values provided')
+      if (nrow(pc_weights) != ncol(subset_pca)-1) {stop('ERROR: mismatch between number of variance values and principal components') }
+
+      pca_weighted = subset_pca[,2:ncol(subset_pca)]*t(pc_weights)
+      subset_pca = cbind(subset_pca[,1],pca_weighted)
+      names(subset_pca)[1] = "POP"
+    }
 
     ## Aggregate
     pca_aggregated = aggregate(subset_pca[,-c(1)], by= list(subset_pca$POP), FUN = mean)
@@ -102,7 +121,7 @@ pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
 
     ## Selecting Sources and Admixed based on input lists
 
- ### Source copying vector
+    ### Source copying vector
 
     Source_cv = pca_aggregated[pca_aggregated$POP %in% sources,]
     if (nrow(Source_cv) == 0) {stop("Your source vector is empty, check your input files")}
@@ -110,7 +129,7 @@ pane <- function(pca_input, as_file, sources = NULL, admixed = NULL) {
       print(Source_cv)
       stop("The source vector contains NA, check your input files")}
 
-  ### Admixed copying vector
+    ### Admixed copying vector
     Admixed_cv = pca_aggregated[pca_aggregated$POP %in% admixed,]
     if (nrow(Admixed_cv) == 0) {stop("Your admixed vector is empty, check your input files")}
     if(any(is.na(Admixed_cv))) {
