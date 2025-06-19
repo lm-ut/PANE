@@ -89,7 +89,7 @@ $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70G
 
 #### Summary Statistics and Weights on the Principal Coordinates
 
-By defaul, PANE will average the coordinates of the sources and target groups to then move to the NNLS step. You can choose to opt for another summary statistics, for example 'median' like follows: 
+By defaul, PANE will average the coordinates of the sources and target groups to then move to the NNLS step, this is the approach used throughout [our paper](https://doi.org/10.1186/s13059-025-03491-z). You can choose to opt for another summary statistics, for example 'median' as follows: 
 
 ```
 $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'), pc_met = 'median')
