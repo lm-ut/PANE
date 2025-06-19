@@ -43,7 +43,7 @@ $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70G
 
 *PANE* package has two functions to read the PCA matrix, ```read_eigen()``` and ```read_flash()```.  
 * ```read_eigen()``` will read a PCA that has been created with smartpca from the [EIGENSOFT](https://github.com/DReichLab/EIG) software.  
-* ```read_flash()``` instead, will read a PCA that has been created with [flashpca](https://github.com/gabraham/flashpca) software.
+* ```read_flash()``` instead, will read a PCA that has been created with [flashpca](https://github.com/gabraham/flashpca) software. The last column, containing information of scaffold and projected samples, will be renamed as 'CC' and will not be used by PANE.
    
 The goal of both functions is to set the PCA file as follows:  
   
