@@ -117,7 +117,7 @@ If you use PANE, please cite [our paper](https://doi.org/10.1186/s13059-025-0349
 
 ## Contact
 
-For questions and bug reports please contact [LM](mailto:ludovica.molinaro@kuleuven.be).
+For questions and bug reports please contact [LM](mailto:lu.molinaro8@gmail.com).
 
 ## Acknowledgement
 
