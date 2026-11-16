@@ -89,7 +89,7 @@ $ PANE_result = pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70G
 #### Writing PANE output
   
 Finally, if you want to save *PANE* results on a table-like format, you can use ```write_pane()```:
-  
+  a
 ```{r, eval=FALSE}
 $ PANE_result <- pane(pca_input = pca, sources = c('GST1','GST2'), admixed=c('70GST1.30GST2'))
 $ write_pane(PANE_result, output_name = 'my_dir/my_pane_results.txt')
@@ -101,4 +101,4 @@ If you use PANE, please cite [our paper](https://genomebiology.biomedcentral.com
 
 ## Contact
 
-For questions and bug reports please contact [LM](mailto:ludovica.molinaro@kuleuven.be).
+For questions and bug reports please contact [LM](mailto:abc@cbd).
