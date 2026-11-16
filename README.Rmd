@@ -101,4 +101,4 @@ If you use PANE, please cite [our paper](https://genomebiology.biomedcentral.com
 
 ## Contact
 
-For questions and bug reports please contact [LM](mailto:abc@cbd).
+For questions and bug reports please contact [LM]().
